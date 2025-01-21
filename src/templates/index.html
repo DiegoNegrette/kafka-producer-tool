@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Kafka Producer UI</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    </head>
+    <body>
+        <div class="container">
+            <h1>Kafka Producer</h1>
+            <form id="kafka-form">
+                <label for="topic">Topic:</label>
+                <input type="text" id="topic" name="topic" placeholder="Enter topic name">
+
+                <label for="key">Key (JSON):</label>
+                <textarea id="key" name="key" placeholder='{"id": "123", "name": "example"}' rows="3"></textarea>
+
+                <label for="value">Value (JSON):</label>
+                <textarea id="value" name="value" placeholder='{"data": "value"}' rows="3"></textarea>
+
+                <button type="button" onclick="sendMessage()">Send</button>
+                <div id="message" class="success"></div>
+            </form>
+        </div>
+
+        <script>
+            function sendMessage() {
+                const topic = document.getElementById('topic').value;
+                const key = document.getElementById('key').value;
+                const value = document.getElementById('value').value;
+
+                try {
+                    // Parse JSON inputs
+                    const keyJson = JSON.parse(key);
+                    const valueJson = JSON.parse(value);
+
+                    fetch('/send', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ topic, key: keyJson, value: valueJson })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            throw new Error(data.error);
+                        }
+                        const messageDiv = document.getElementById('message');
+                        messageDiv.textContent = data.status;
+                        messageDiv.className = "success";
+                    })
+                    .catch(error => {
+                        const messageDiv = document.getElementById('message');
+                        messageDiv.textContent = 'Error: ' + error.message || error.error || error;
+                        messageDiv.className = "error";
+                        console.error('Error:', error);
+                    });
+                } catch (error) {
+                    const messageDiv = document.getElementById('message');
+                    messageDiv.textContent = 'Invalid JSON: ' + error.message;
+                    messageDiv.className = "error";
+                }
+            }
+        </script>
+    </body>
+</html>
