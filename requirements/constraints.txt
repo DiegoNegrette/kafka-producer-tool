@@ -1,2 +1,12 @@
 flask
-kafka-python
+kafka-python>=2.0.2
+avro==1.11.0
+avro-validator==1.0.9
+backoff-utils>=1.0.1
+confluent-kafka==2.3.0
+requests==2.25.1
+
+# Additional dependencies for Schema Registry support
+fastavro  # Required for Avro serialization
+httpx  # Required for Schema Registry API calls
+attrs  # Required by httpx and other libraries

@@ -14,9 +14,10 @@ WORKDIR /code
 COPY requirements/common.txt requirements/constraints.txt requirements/development.txt /code/requirements/
 
 # Install dependencies
+RUN python -m pip install --upgrade pip setuptools wheel
 RUN python -m pip install --no-cache-dir -r /code/requirements/constraints.txt
-RUN python -m pip install --no-cache-dir -r /code/requirements/common.txt
-RUN python -m pip install --no-cache-dir -r /code/requirements/development.txt
+# RUN python -m pip install --no-cache-dir -r /code/requirements/common.txt
+# RUN python -m pip install --no-cache-dir -r /code/requirements/development.txt
 
 # Create a non-root user
 RUN addgroup --system ${APP_GROUP} --gid 1000 && \
